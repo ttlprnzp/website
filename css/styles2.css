@@ -22,7 +22,7 @@
  @viewport { width: device-width; }
  
  #wrapper {
-    width: 80%;
+    width: 100%;
     margin: auto;
   }
 
@@ -110,12 +110,12 @@ canvas {
  
  section {
    border-top: 1px solid #ff9b9b80;
+   width: 80%;
+   margin: auto;
    padding: 0 0 0;
    text-align: left;
-   display: inline-block;
    overflow: hidden;
    height: 400px;
-   width: 100%;
  }
 
  img {
@@ -159,7 +159,7 @@ canvas {
    position: fixed;
    z-index: 3;
    padding:.5em;
-   width: 80%;
+   width: 100%;
    font-size: 18pt;
  }
  
@@ -337,7 +337,7 @@ canvas {
 .main {
     color: rgba(255,255,255,0.8);
     font-size: 16pt; /* Increased text to enable scrolling */
-    width: 80%;
+    width: 100%;
     padding: 1%;
     margin-top: 100px;
     position: absolute;
