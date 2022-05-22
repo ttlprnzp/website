@@ -160,14 +160,14 @@ canvas {
    z-index: 3;
    padding:.5em;
    width: 100%;
-   font-size: 18pt;
+   font-size: large;
  }
  
  .logo {
    -webkit-tap-highlight-color: rgba(0,0,0,0);
    text-decoration: none;
    line-height: 80px;
-   font-size: 24pt;
+   font-size: larger;
    padding: 0 20px;
    color: #fff;
    float: left;
@@ -336,7 +336,7 @@ canvas {
 
 .main {
     color: rgba(255,255,255,0.8);
-    font-size: 16pt; /* Increased text to enable scrolling */
+    font-size: medium; /* Increased text to enable scrolling */
     width: 100%;
     padding: 1%;
     margin-top: 100px;
