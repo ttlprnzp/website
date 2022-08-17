@@ -10,7 +10,22 @@
    border: 0;
  }
  
- a:active,
+ a:link {
+  font-weight: bold ;
+  color: #ff9b9b;
+  background-color: transparent;
+  text-decoration: none;
+  }
+
+  a:visited {
+  font-weight: normal;
+  color: #ff9b9b;
+  background-color: transparent;
+  text-decoration: none;
+  }
+
+a:active
+
  a:hover {
    outline: 0;
  }
@@ -22,9 +37,9 @@
  @viewport { width: device-width; }
  
  #wrapper {
-    width: 100%;
-    margin: auto;
-  }
+  width: 100%;
+  margin: auto;
+}
 
 /* ------------------------------------------
   CANVAS
@@ -130,6 +145,14 @@ canvas {
    margin-left: 1em;
  }
 
+ h1 {
+  margin-top: .5em;
+  margin-bottom: .5em;
+  font-weight: normal;
+  margin-left: 1em;
+  text-align: center;
+}
+
  #pic1{
   float: left;
  }
@@ -144,7 +167,7 @@ canvas {
  }
  
  p {
-   width: 80%;
+   width: 60%;
    padding-left: 2em;
  }
  
@@ -341,7 +364,7 @@ canvas {
     padding: 1%;
     margin-top: 100px;
     position: absolute;
-    overflow: auto;
+    overflow: hidden;
     text-align: center;
   }
   
