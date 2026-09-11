@@ -491,9 +491,51 @@ p:last-child {
    flat scrim used elsewhere (there's no title to keep legible
    against, just one long paragraph, so it can lean into the
    blur more). */
+.bio-portrait {
+  position: relative;
+}
+
+/* The bio paragraph is much longer than a normal gallery caption,
+   and .entry-media here has no fixed aspect-ratio (see below) --
+   left in normal grid flow, that long text would force the shared
+   "stack" row taller than the portrait itself (the row height is
+   the max of every item sharing it), leaving a gap of empty/tinted
+   space between the bottom of the photo and the caption on narrow
+   screens, where the text needs far more lines to wrap. Absolutely
+   positioning it takes it out of grid track sizing entirely, so the
+   row height comes from the image alone and the caption just
+   overlays its bottom edge (growing upward over the photo if the
+   text needs more room than the image is tall). */
 .bio-portrait .entry-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
+}
+
+/* On mobile, stop overlaying the bio text on the portrait entirely --
+   stack it below instead, as plain readable page text rather than
+   white text over a blurred scrim. */
+@media screen and (max-width: 40em) {
+  .bio-portrait {
+    display: block;
+  }
+  .bio-portrait .entry-media {
+    position: static;
+  }
+  .bio-portrait .entry-text {
+    position: static;
+    margin-top: var(--space-3);
+    padding: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .bio-portrait .entry-text p {
+    color: var(--color-ink-soft);
+  }
 }
 
 /* Same full width as the other galleries, but the portrait's own
@@ -655,6 +697,22 @@ p:last-child {
   margin-bottom: 0.7em;
 }
 
+/* Sound/Spaces galleries on mobile -- text stays overlaid on the
+   picture there (unlike the About portrait), so shrink it well
+   below the desktop sizes to leave more of the image visible
+   instead of covered by the caption block. */
+@media screen and (max-width: 40em) {
+  .gallery-item:not(.bio-portrait) .entry-text h3 {
+    font-size: 1.1rem;
+  }
+  .gallery-item:not(.bio-portrait) .entry-text p {
+    font-size: 0.7rem;
+  }
+  .gallery-item:not(.bio-portrait) .entry-text .credit {
+    font-size: 0.6rem;
+  }
+}
+
 /* ------------------------------------------
   MUSIC PLAYERS
 --------------------------------------------- */
@@ -814,6 +872,28 @@ p:last-child {
   .concert-table th,
   .concert-table td {
     padding: 0.5em 0.6em 0.5em 0;
+  }
+
+  /* The Date column's 12% share (from the desktop widths above) is
+     wide enough for "16.01." but not for the longer "6.-8.06."
+     range format some entries use -- since the cell is nowrap, that
+     just overflows into the City column at narrow widths instead of
+     wrapping. Give Date more room, trimmed from Venue/City. */
+  .concert-table th:nth-child(1),
+  .concert-table td:nth-child(1) {
+    width: 20%;
+  }
+  .concert-table th:nth-child(2),
+  .concert-table td:nth-child(2) {
+    width: 22%;
+  }
+  .concert-table th:nth-child(3),
+  .concert-table td:nth-child(3) {
+    width: 32%;
+  }
+  .concert-table th:nth-child(4),
+  .concert-table td:nth-child(4) {
+    width: 26%;
   }
 }
 ::-webkit-scrollbar {
