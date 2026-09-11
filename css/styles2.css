@@ -519,7 +519,7 @@ p:last-child {
    stack it below instead, as plain readable page text rather than
    white text over a blurred scrim. */
 @media screen and (max-width: 40em) {
-  .bio-portrait {
+  .gallery-item.bio-portrait {
     display: block;
   }
   .bio-portrait .entry-media {
