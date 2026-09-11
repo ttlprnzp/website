@@ -1,398 +1,834 @@
+/* =============================================================
+   Design tokens
+ * ============================================================= */
+:root {
+  --color-bg: #ffffff;
+  --color-ink: #14151a;
+  --color-ink-soft: rgba(20, 21, 26, 0.64);
+  --color-ink-faint: rgba(20, 21, 26, 0.38);
+  --color-accent: #6f1d31;
+  --color-accent-tint: rgba(111, 29, 49, 0.08);
+  --color-line: rgba(20, 21, 26, 0.12);
 
- body, div,
- h1, h2, h3, h4, h5, h6,
- p, blockquote, pre, dl, dt, dd, ol, ul, li, hr,
- fieldset, form, label, legend, th, td,
- article, aside, figure, footer, header, hgroup, menu, nav, section,
- summary, hgroup {
-   margin: 0;
-   padding: 0;
-   border: 0;
- }
- 
- a:link {
-  font-weight: bold ;
-  color: #ff9b9b;
+  --font-display: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --measure: 38rem;
+  --header-height: 4.5rem;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.75rem;
+  --space-4: 3rem;
+  --space-5: 5rem;
+}
+
+/* Satoshi is loaded via Fontshare's CDN link in each page's <head>
+   (https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900) --
+   no local @font-face needed here. */
+
+/* =============================================================
+   Reset
+ * ============================================================= */
+body, div,
+h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, dl, dt, dd, ol, ul, li, hr,
+fieldset, form, label, legend, th, td,
+article, aside, figure, footer, header, hgroup, menu, nav, section,
+summary, hgroup {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+@-webkit-viewport { width: device-width; }
+@-moz-viewport { width: device-width; }
+@-ms-viewport { width: device-width; }
+@-o-viewport { width: device-width; }
+@viewport { width: device-width; }
+
+/* =============================================================
+   Base
+ * ============================================================= */
+html {
+  background: var(--color-bg);
+}
+
+body {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Film-grain texture over the whole site, echoing the grainy
+   double-exposure portrait on the About page. Fixed + pointer-
+   events:none so it sits over everything without blocking clicks;
+   low opacity so it reads as texture, not noise. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.1;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 6 -4.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 100px 100px;
+}
+
+a:link, a:visited {
+  color: var(--color-accent);
+  font-weight: 600;
   background-color: transparent;
   text-decoration: none;
+  border-bottom: 1px solid rgba(111, 29, 49, 0.35);
+}
+
+a:hover, a:active {
+  border-bottom-color: var(--color-accent);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Present for screen readers/document outline, invisible on screen --
+   used for page <h1>s now that titles aren't shown in the main area. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-
-  a:visited {
-  font-weight: normal;
-  color: #ff9b9b;
-  background-color: transparent;
-  text-decoration: none;
-  }
-
-a:active
-
- a:hover {
-   outline: 0;
- }
- 
- @-webkit-viewport { width: device-width; }
- @-moz-viewport { width: device-width; }
- @-ms-viewport { width: device-width; }
- @-o-viewport { width: device-width; }
- @viewport { width: device-width; }
- 
- #wrapper {
-  width: 100%;
-  margin: auto;
 }
 
 /* ------------------------------------------
-  CANVAS
+  CANVAS — generative background
 --------------------------------------------- */
-
 canvas {
-    background-color: #000000;
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    border: 0;
-    background-attachment:fixed;
-    overflow: hidden; 
-    z-index: -2;
-  }
-
- /* ------------------------------------------
-   RESPONSIVE NAV STYLES
- --------------------------------------------- */
- 
- .nav-collapse ul {
-   margin: 0;
-   padding: 0;
-   width: 100%;
-   display: block;
-   list-style: none;
- }
- 
- .nav-collapse li {
-   width: 100%;
-   display: block;
- }
- 
- .js .nav-collapse {
-   clip: rect(0 0 0 0);
-   max-height: 0;
-   position: absolute;
-   display: block;
-   overflow: hidden;
-   zoom: 1;
- }
- 
- .nav-collapse.opened {
-   max-height: 9999px;
- }
- 
- .disable-pointer-events {
-   pointer-events: none !important;
- }
- 
- .nav-toggle {
-   -webkit-tap-highlight-color: rgba(0,0,0,0);
-   -webkit-touch-callout: none;
-   -webkit-user-select: none;
-   -moz-user-select: none;
-   -ms-user-select: none;
-   -o-user-select: none;
-   user-select: none;
- }
- 
- @media screen and (min-width: 40em) {
-   .js .nav-collapse {
-     position: relative;
-   }
-   .js .nav-collapse.closed {
-     max-height: none;
-   }
-   .nav-toggle {
-     display: none;
-   }
- }
- 
- 
- /* ------------------------------------------
-   DEMO STYLES
- --------------------------------------------- */
- 
- body {
-   -webkit-text-size-adjust: 100%;
-   -ms-text-size-adjust: 100%;
-   text-size-adjust: 100%;
- }
- 
- section {
-   border-top: 1px solid #ff9b9b80;
-   width: 80%;
-   margin: auto;
-   padding: 0 0 0;
-   text-align: left;
-   overflow: hidden;
-   height: 400px;
- }
-
- img {
-  height: 400px;
-
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
+  z-index: -2;
+  opacity: 0.7;
 }
 
- h3 {
-   margin-top: .5em;
-   margin-bottom: .5em;
-   font-style: oblique;
-   margin-left: 1em;
- }
+#wrapper {
+  width: 100%;
+  margin: auto;
+  position: relative;
+}
 
- h1 {
-  margin-top: .5em;
-  margin-bottom: .5em;
-  font-weight: normal;
-  margin-left: 1em;
+/* ------------------------------------------
+  FIXED HEADER
+--------------------------------------------- */
+header {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: var(--header-height);
+  transition: background 0.25s ease;
+}
+
+/* Backing once page content (not just the generative canvas) is
+   scrolled under the fixed header -- a soft top-to-bottom fade
+   rather than a flat solid bar, see js/header-scroll.js. */
+header.header--solid {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 0px solid transparent;
+}
+
+.header-inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  height: 100%;
+  min-height: var(--header-height);
+  padding: 0 var(--space-3);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--font-display);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  text-decoration: none;
+  border-bottom: none;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  order: 1;
+}
+
+.logo:hover {
+  color: var(--color-accent);
+}
+
+/* ------------------------------------------
+  NAVIGATION
+--------------------------------------------- */
+.nav-collapse,
+.nav-collapse * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.nav-collapse ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  list-style: none;
+}
+
+.nav-collapse li {
+  width: 100%;
+  display: block;
+}
+
+.js .nav-collapse {
+  clip: rect(0 0 0 0);
+  max-height: 0;
+  position: absolute;
+  top: var(--header-height);
+  right: 0;
+  width: 100%;
+  background: var(--color-bg);
+  border-bottom: 0;
+  display: block;
+  overflow: hidden;
+  zoom: 1;
+}
+
+.nav-collapse.opened {
+  border-bottom: 1px solid var(--color-line);
+  max-height: 9999px;
+}
+
+.disable-pointer-events {
+  pointer-events: none !important;
+}
+
+.nav-toggle {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  flex: 0 0 auto;
+  order: 3;
+}
+
+#nav {
+  order: 2;
+  flex: 0 0 auto;
+}
+
+@media screen and (min-width: 40em) {
+  .js .nav-collapse {
+    position: relative;
+    top: auto;
+    background: transparent;
+    border-bottom: 0;
+    width: auto;
+  }
+  .js .nav-collapse.closed {
+    max-height: none;
+  }
+  .nav-toggle {
+    display: none;
+  }
+}
+
+.nav-collapse,
+.nav-collapse ul {
+  list-style: none;
+  width: 100%;
+  float: left;
+}
+
+@media screen and (min-width: 40em) {
+  .nav-collapse {
+    float: right;
+    width: auto;
+  }
+}
+
+.nav-collapse li {
+  float: left;
+  width: 100%;
+}
+
+@media screen and (min-width: 40em) {
+  .nav-collapse li {
+    width: auto;
+  }
+}
+
+.nav-collapse a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: var(--font-display);
+  border-top: 1px solid var(--color-line);
+  border-bottom: none;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.9em 1.5em;
+  color: var(--color-ink);
+  width: 100%;
+  float: left;
+  transition: font-size 0.2s ease, color 0.2s ease;
+}
+
+.menu-item.active a {
+  color: var(--color-accent);
+  font-size: 1.2rem;
+}
+
+.nav-collapse a:hover:not(.active) {
+  color: var(--color-accent);
+}
+
+@media screen and (min-width: 40em) {
+  .nav-collapse a {
+    padding: 0.4em 1em;
+    text-align: center;
+    border-top: 0;
+    float: left;
+    margin: 0;
+  }
+}
+
+.nav-collapse ul ul a {
+  padding-left: 2em;
+}
+
+@media screen and (min-width: 40em) {
+  .nav-collapse ul ul a {
+    display: none;
+  }
+}
+
+/* ------------------------------------------
+  MASK (mobile nav backdrop)
+--------------------------------------------- */
+.mask {
+  -webkit-transition: opacity 300ms;
+  -moz-transition: opacity 300ms;
+  transition: opacity 300ms;
+  background: rgba(20, 21, 26, 0.25);
+  visibility: hidden;
+  position: fixed;
+  opacity: 0;
+  z-index: 2;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
+}
+
+.android .mask {
+  -webkit-transition: none;
+  transition: none;
+}
+
+.js-nav-active .mask {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media screen and (min-width: 40em) {
+  .mask {
+    display: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* ------------------------------------------
+  NAV TOGGLE (hamburger)
+--------------------------------------------- */
+.nav-toggle {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: none;
+  text-indent: -300px;
+  position: relative;
+  overflow: hidden;
+  width: 44px;
+  height: var(--header-height);
+  float: right;
+}
+
+.nav-toggle:before {
+  color: var(--color-ink);
+  font: normal 22px/1 "responsivenav";
+  text-transform: none;
+  text-align: center;
+  position: absolute;
+  content: "\2261";
+  text-indent: 0;
+  speak: none;
+  width: 100%;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.nav-toggle.active:before {
+  font-size: 20pt;
+  content: "\78";
+  color: var(--color-accent);
+}
+
+/* ------------------------------------------
+  MAIN CONTENT
+--------------------------------------------- */
+.main {
+  color: var(--color-ink);
+  width: 100%;
+  padding: var(--space-5) var(--space-3) var(--space-5);
+  margin-top: var(--header-height);
+  text-align: left;
+}
+
+.main--landing {
+  padding: 0;
+  min-height: calc(100vh - var(--header-height));
+}
+
+.contact-section {
   text-align: center;
 }
 
- #pic1{
-  float: left;
- }
+#content {
+  max-width: 64rem;
+  margin: 0 auto;
+}
 
- #pic2{
-   float: right;
- }
+section {
+  width: 100%;
+  max-width: var(--measure);
+  margin: 0 auto var(--space-4);
+  text-align: left;
+}
 
- #info{
-   text-align: left;
-   overflow: hidden;
- }
- 
- p {
-   width: 60%;
-   padding-left: 2em;
- }
- 
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 1.5rem + 2.2vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-ink);
+  margin-bottom: var(--space-3);
+  text-align: left;
+}
 
- /* ------------------------------------------
-   FIXED HEADER
- --------------------------------------------- */
- 
- header {
-   background: rgb(0,0,0);
-   background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-   position: fixed;
-   z-index: 3;
-   padding:.5em;
-   width: 100%;
-   font-size: large;
- }
- 
- .logo {
-   -webkit-tap-highlight-color: rgba(0,0,0,0);
-   text-decoration: none;
-   line-height: 80px;
-   font-size: larger;
-   padding: 0 20px;
-   color: #fff;
-   float: left;
- }
- 
- 
- /* ------------------------------------------
-   MASK
- --------------------------------------------- */
- 
- .mask {
-   -webkit-transition: opacity 300ms;
-   -moz-transition: opacity 300ms;
-   transition: opacity 300ms;
-   background: rgba(0,0,0, .5);
-   visibility: hidden;
-   position: fixed;
-   opacity: 0;
-   z-index: 2;
-   bottom: 0;
-   right: 0;
-   left: 0;
-   top: 0;
- }
- 
- .android .mask {
-   -webkit-transition: none;
-   transition: none;
- }
- 
- .js-nav-active .mask {
-   visibility: visible;
-   opacity: 1;
- }
- 
- @media screen and (min-width: 40em) {
-   .mask {
-     display: none !important;
-     opacity: 0 !important;
-   }
- }
- 
- 
- /* ------------------------------------------
-   NAVIGATION STYLES
- --------------------------------------------- */
- 
- .fixed {
-   position: fixed;
-   width: 100%;
-   left: 0;
-   top: 0;
- }
- 
- .nav-collapse,
- .nav-collapse * {
-   -webkit-box-sizing: border-box;
-   -moz-box-sizing: border-box;
-   box-sizing: border-box;
- }
- 
- .nav-collapse,
- .nav-collapse ul {
-   list-style: none;
-   width: 100%;
-   float: left;
- }
- 
- @media screen and (min-width: 40em) {
-   .nav-collapse {
-     float: right;
-     width: auto;
-   }
- }
- 
- .nav-collapse li {
-   float: left;
-   width: 100%;
- }
- 
- @media screen and (min-width: 40em) {
-   .nav-collapse li {
-     width: auto;
-   }
- }
- 
- .nav-collapse a {
-   -webkit-tap-highlight-color: rgba(0,0,0,0);
-   border-top: 1px solid #ff9b9b;
-   text-decoration: none;
-   font-style: italic;
-   padding: 0.7em 1em;
-   color: #fff;
-   width: 100%;
-   float: left;
- }
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin-top: 0;
+  margin-bottom: 0.4em;
+}
 
- .nav-collapse a:hover:not(.active) {color: #ff9b9b;}
- 
- @media screen and (min-width: 40em) {
-   .nav-collapse a {
-     padding: 1.02em 2em;
-     text-align: center;
-     border-top: 0;
-     float: left;
-     margin: 0;
-   }
- }
- 
- .nav-collapse ul ul a {
-   padding-left: 2em;
- }
- 
- @media screen and (min-width: 40em) {
-   .nav-collapse ul ul a {
-     display: none;
-   }
- }
- 
- 
- /* ------------------------------------------
-   NAV TOGGLE STYLES
- --------------------------------------------- */
- 
- @font-face {
-    font-family: lora;
-    color: #ffffff;
-    src: url(/css/fonts/Lora-VariableFont_wght.ttf);
-    font-weight: normal;
-    }
- 
- .nav-toggle {
-   -webkit-font-smoothing: antialiased;
-   -moz-osx-font-smoothing: grayscale;
-   text-decoration: none;
-   text-indent: -300px;
-   position: relative;
-   overflow: hidden;
-   width: 60px;
-   height: 100px;
-   float: right;
- }
- 
- .nav-toggle:before {
-   color: #fff; /* Edit this to change the icon color */
-   font: normal 28px/55px "responsivenav"; /* Edit font-size (28px) to change the icon size */
-   text-transform: none;
-   text-align: center;
-   position: absolute;
-   content: "\2261"; /* Hamburger icon */
-   text-indent: 0;
-   speak: none;
-   width: 100%;
-   left: 0;
-   top: 0;
- }
- 
- .nav-toggle.active:before {
-   font-size: 24pt;
-   content: "\78"; /* Close icon */
- }
- 
- /* ------------------------------------------
-  MAIN
+p {
+  width: auto;
+  max-width: var(--measure);
+  padding-left: 0;
+  color: var(--color-ink-soft);
+  margin-bottom: 1em;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* About page portrait -- reuses the gallery-item/entry-media/
+   entry-text overlay treatment from the Sound/Spaces pages, with
+   a much stronger frosted-glass blur behind the bio text than the
+   flat scrim used elsewhere (there's no title to keep legible
+   against, just one long paragraph, so it can lean into the
+   blur more). */
+.bio-portrait .entry-text {
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+/* Same full width as the other galleries, but the portrait's own
+   (tall) aspect ratio instead of the shared landscape crop. */
+.bio-portrait .entry-media {
+  aspect-ratio: auto;
+}
+
+.bio-portrait .entry-media img {
+  height: auto;
+}
+
+/* ------------------------------------------
+  WORKS / SOUND GALLERY
 --------------------------------------------- */
+.gallery-item {
+  max-width: 64rem;
+  display: grid;
+  grid-template-areas: "stack";
+  margin-bottom: var(--space-3);
+}
 
-.main {
-    color: rgba(255,255,255,0.8);
-    font-size: medium; /* Increased text to enable scrolling */
-    width: 100%;
-    padding: 1%;
-    margin-top: 100px;
-    position: absolute;
-    overflow: hidden;
-    text-align: center;
+.entry-media {
+  grid-area: stack;
+  position: relative;
+  aspect-ratio: 16 / 11.5;
+  overflow: hidden;
+  background: var(--color-accent-tint);
+  box-shadow: 0 2rem 4rem -2.25rem rgba(0, 0, 0, 0.4);
+}
+
+.entry-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(45%) contrast(1.03);
+  transform: scale(1);
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1), filter 0.7s ease;
+}
+
+.entry-media:hover img {
+  filter: grayscale(0%);
+  transform: scale(1.035);
+}
+
+/* Whole picture becomes a link/play trigger for entries that have
+   one -- either an "a" wrapping the img (external links) or the
+   .entry-media itself (inline YouTube playback, see media-embed.js). */
+.entry-media a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-bottom: none;
+}
+
+.entry-media[data-youtube-id],
+.entry-media[data-soundcloud-src] {
+  cursor: pointer;
+}
+
+.entry-media[data-youtube-id]:focus-visible,
+.entry-media[data-soundcloud-src]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.entry-media iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+/* Audio-only embeds (SoundCloud) stay invisible -- the picture
+   keeps showing, the track just plays behind it. Positioned/sized
+   rather than display:none so browsers don't suspend playback. */
+.entry-media iframe.audio-embed {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Text sits in the same grid cell as the image, stacked on top of
+   it, spanning the full width with a dark scrim behind it for
+   legibility -- text alignment alternates per entry (see .flip). */
+.entry-text {
+  grid-area: stack;
+  align-self: end;
+  justify-self: stretch;
+  padding: var(--space-4) var(--space-3) var(--space-2);
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 14, 0.82) 0%,
+    rgba(10, 10, 14, 0.45) 55%,
+    rgba(10, 10, 14, 0) 100%
+  );
+  z-index: 1;
+}
+
+.gallery-item.flip .entry-text {
+  text-align: right;
+}
+
+/* Force width directly on every child instead of relying on
+   inheritance/stretch from .entry-text -- belt-and-braces against
+   anything upstream narrowing or re-centering the text, on both
+   regular and flip entries. */
+.entry-text > h3,
+.entry-text > p,
+.entry-text > .credit {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.gallery-item.flip .entry-text > h3,
+.gallery-item.flip .entry-text > p,
+.gallery-item.flip .entry-text > .credit {
+  text-align: right;
+}
+
+/* While a YouTube embed is playing (see media-embed.js), hide the
+   title/caption scrim -- it sits right over YouTube's own control
+   bar and would block clicks on play/pause, the scrubber, etc. */
+.gallery-item.is-playing .entry-text {
+  display: none;
+}
+
+.entry-text h3 {
+  color: #fff;
+  font-size: 1.85rem;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin-bottom: 0.3em;
+  text-shadow: 0 0.1em 0.6em rgba(0, 0, 0, 0.45);
+}
+
+.entry-text p {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.entry-text a {
+  color: #fff;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-accent);
+  text-underline-offset: 0.15em;
+}
+
+.entry-text .credit {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.75rem;
+  font-style: italic;
+  margin-bottom: 0.7em;
+}
+
+/* ------------------------------------------
+  MUSIC PLAYERS
+--------------------------------------------- */
+.player-grid {
+  max-width: 64rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-1);
+}
+
+@media screen and (min-width: 40em) {
+  .player-grid {
+    grid-template-columns: 1fr 1fr;
   }
-  
-  /* ------------------------------------------
-    SCROLLBAR
-  --------------------------------------------- */
-  
-    /* width */
-    ::-webkit-scrollbar {
-      width: 1px;
-    }
-    
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #000000; 
-    }
-     
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: rgb(255, 155, 155); 
-    }
-    
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgb(255, 255, 255); 
-    }
-  
- 
- 
- 
- 
+}
+
+@media screen and (min-width: 64em) {
+  .player-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.player-grid iframe {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--color-line);
+  opacity: 1;
+}
+
+/* ------------------------------------------
+  CONCERTS TABLE
+--------------------------------------------- */
+.year-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em 1em;
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--color-line);
+}
+
+.year-nav a {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-bottom: 1px solid transparent;
+}
+
+.year-nav a:hover {
+  border-bottom-color: var(--color-accent);
+}
+
+.concerts-section {
+  max-width: 64rem;
+  scroll-margin-top: 6rem;
+}
+
+.concerts-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.concert-count {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--color-ink-faint);
+}
+
+.concert-country {
+  font-size: 0.75em;
+  color: var(--color-ink-faint);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.concert-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.concert-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  table-layout: fixed;
+}
+
+.concert-table th:nth-child(1),
+.concert-table td:nth-child(1) {
+  width: 12%;
+}
+
+.concert-table th:nth-child(2),
+.concert-table td:nth-child(2) {
+  width: 24%;
+}
+
+.concert-table th:nth-child(3),
+.concert-table td:nth-child(3) {
+  width: 38%;
+}
+
+.concert-table th:nth-child(4),
+.concert-table td:nth-child(4) {
+  width: 26%;
+}
+
+.concert-table th {
+  text-align: left;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-ink-faint);
+  padding: 0.6em 1em 0.6em 0;
+  border-bottom: 1px solid var(--color-line);
+  white-space: nowrap;
+}
+
+.concert-table td {
+  padding: 0.7em 1em 0.7em 0;
+  border-bottom: 1px solid var(--color-line);
+  color: var(--color-ink-soft);
+  vertical-align: top;
+}
+
+.concert-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.concert-date {
+  white-space: nowrap;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.concert-band {
+  display: inline-block;
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--color-accent);
+}
+
+.concert-support {
+  color: var(--color-ink-faint);
+  font-size: 0.9rem;
+}
+
+@media screen and (max-width: 40em) {
+  .concert-table {
+    font-size: 0.85rem;
+  }
+  .concert-table th,
+  .concert-table td {
+    padding: 0.5em 0.6em 0.5em 0;
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-faint);
+}
